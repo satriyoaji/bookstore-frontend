@@ -64,17 +64,21 @@ const Cart = () => {
                                     <AiOutlineClose />
                                 </div>
                                 <Link href={`/details/${book.id}`}>
-                                    <Image src={book?.cover_image} width="175" height="375" className={classes.img} />
+                                    <Image src={book?.coverImage} width="175" height="375" className={classes.img} />
                                 </Link>
                                 <div className={classes.bookData}>
                                     <h3 className={classes.title}>{book?.title}</h3>
                                     <div className={classes.bookAndQuantity}>
+                                        {/*<span className={classes.quantity}>*/}
+                                        {/*    {book.point} x*/}
+                                        {/*</span>*/}
                                         <span className={classes.quantity}>
-                                            {book.quantity} x
+                                            <span>Writer: </span>
+                                            {book?.writer}
                                         </span>
                                         <span className={classes.price}>
-                                            <span>$</span>
                                             {book?.price}
+                                            <span> Point</span>
                                         </span>
                                     </div>
                                 </div>

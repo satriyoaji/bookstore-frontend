@@ -10,7 +10,7 @@ import { addBook } from '@/app/redux/cartSlice'
 
 const Details = (ctx) => {
     const id = ctx.params.id
-    const URL = `https://openlibrary.org/works/${id}.json`
+    const BASE_URL = `http://localhost:8080/books/${id}`
     const dispatch = useDispatch()
     const [book, setBook] = useState({})
     const [reviews, setReviews] = useState([])
@@ -21,26 +21,19 @@ const Details = (ctx) => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const res = await fetch(URL)
+                const res = await fetch(BASE_URL)
                 const data = await res.json()
                 console.log(data)
 
-                // if book has no pages specified, make them 350 by default
-                let pages = null
-                if (data?.excerpts) {
-                    pages = data?.excerpts[0]?.pages
-                } else {
-                    pages = 350
-                }
-
-
-
                 const details = {
+                    id: data.id,
                     title: data.title,
-                    desc: data.description.value,
-                    id: data.key.split('/')[2],
-                    cover_image: `https://covers.openlibrary.org/b/id/${data?.covers[0]}-L.jpg`,
-                    pages
+                    writer: data.writer,
+                    tags: data.tags,
+                    point: data.point,
+                    // desc: data.description.value,
+                    coverImage: data.coverImage,
+                    pages: 270
                 }
 
                 setBook(details)
@@ -76,15 +69,13 @@ const Details = (ctx) => {
         }))
     }
 
-    console.log(book)
-
     return (
         <div className={classes.container}>
             <div className={classes.wrapper}>
                 <div className={classes.bookDetails}>
                     <div className={classes.left}>
                         <Image
-                            src={book?.cover_image}
+                            src={book?.coverImage}
                             height="750"
                             width="350"
                             alt="Book cover"
@@ -95,11 +86,24 @@ const Details = (ctx) => {
                             {book?.title}
                         </h1>
                         <p className={classes.desc}>
-                            {book?.desc?.slice(0, 750)}
+                            Writer: {book?.writer}
                         </p>
+                        {/*<p className={classes.desc}>*/}
+                        {/*    {book?.desc?.slice(0, 750)}*/}
+                        {/*</p>*/}
+                        <div className={classes.section}>
+                            <span className={classes.book_tags}>
+                                Tags:
+                                <ul className={classes.list_tag}>
+                                    {book?.tags?.map((tag) => (
+                                        <li>{tag}</li>
+                                    ))}
+                                </ul>
+                            </span>
+                        </div>
                         <div className={classes.section}>
                             <span className={classes.price}>
-                                Price: ${price}
+                                Price: {book?.point} point
                             </span>
                             <span className={classes.book_pages}>
                                 Pages: {book?.pages}
